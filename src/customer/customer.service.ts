@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
   CreateCustomerInput,
@@ -16,19 +18,16 @@ export class CustomerService {
     return this.prisma.customer.create({ data });
   }
 
-  async findAll(params: FindAllCustomerInput) {
+  async findMany(params: FindAllCustomerInput) {
     return this.prisma.customer.findMany({ ...params });
   }
 
   async update(params: UpdateOneCustomerInput): Promise<Customer> {
-    const { email, password, where } = params;
+    const { customer, where } = params;
 
     return this.prisma.customer.update({
       where,
-      data: {
-        email,
-        password,
-      },
+      data: customer,
     });
   }
 
