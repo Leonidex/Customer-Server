@@ -19,7 +19,7 @@ type Customer {
 scalar Timestamp
 
 type Query {
-  findAll(data: FindAllCustomerInput!): [Customer!]!
+  findMany(filter: FindAllCustomerInput!): [Customer!]!
 }
 
 input FindAllCustomerInput {
@@ -37,9 +37,9 @@ input WhereCustomerInput {
 }
 
 type Mutation {
-  createOne(data: CreateCustomerInput!): Customer!
+  createOne(customer: CreateCustomerInput!): Customer!
   updateOne(data: UpdateOneCustomerInput!): Customer!
-  removeOne(data: WhereCustomerInput!): Customer!
+  removeOne(where: WhereCustomerInput!): Customer!
 }
 
 input CreateCustomerInput {
@@ -48,7 +48,6 @@ input CreateCustomerInput {
 }
 
 input UpdateOneCustomerInput {
-  email: String
-  password: String
+  customer: CreateCustomerInput
   where: WhereCustomerInput
 }
