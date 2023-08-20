@@ -16,18 +16,6 @@ export class CustomerService {
     return this.prisma.customer.create({ data });
   }
 
-  // async createMany(dataArray: CreateCustomerInput[]): Promise<Customer[]> {
-  //   const createOps = dataArray.map((data) =>
-  //     this.prisma.customer.create({ data }),
-  //   );
-  //
-  //   return this.prisma.$transaction(createOps);
-  // }
-
-  // async findOne(params: FindOneCustomerInput): Promise<Customer | null> {
-  //   return this.prisma.customer.findUnique({ ...params });
-  // }
-
   async findAll(params: FindAllCustomerInput) {
     return this.prisma.customer.findMany({ ...params });
   }
@@ -44,31 +32,7 @@ export class CustomerService {
     });
   }
 
-  // async updateMany(updates: UpdateOneCustomerInput[]): Promise<Customer[]> {
-  //   const updateOps = updates.map((update) => {
-  //     const { email, password, where } = update;
-  //
-  //     return this.prisma.customer.update({
-  //       where,
-  //       data: {
-  //         email,
-  //         password,
-  //       },
-  //     });
-  //   });
-  //
-  //   return this.prisma.$transaction(updateOps);
-  // }
-
   async remove(where: WhereCustomerInput): Promise<Customer> {
     return this.prisma.customer.delete({ where });
   }
-
-  // async removeMany(whereArray: WhereCustomerInput[]): Promise<Customer[]> {
-  //   const deleteOps = whereArray.map((where) =>
-  //     this.prisma.customer.delete({ where }),
-  //   );
-  //
-  //   return this.prisma.$transaction(deleteOps);
-  // }
 }

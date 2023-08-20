@@ -17,25 +17,10 @@ export class CustomerResolver {
     return this.customerService.create(customer);
   }
 
-  // @Query(() => [Customer])
-  // async createMany(@Args('data') dataArray: CreateCustomerInput[]) {
-  //   return this.customerService.createMany(dataArray);
-  // }
-
-  // @Query(() => Customer)
-  // async findOne(@Args('data') { where }: FindOneCustomerInput) {
-  //   return this.customerService.findOne({ where });
-  // }
-
   @Query(() => [Customer])
   async findAll(@Args('data') filter: FindAllCustomerInput) {
     return this.customerService.findAll(filter);
   }
-
-  // @Query(() => [Customer])
-  // async updateMany(@Args('data') updates: UpdateOneCustomerInput[]) {
-  //   return this.customerService.updateMany(updates);
-  // }
 
   @Mutation(() => Customer)
   async updateOne(@Args('data') update: UpdateOneCustomerInput) {
