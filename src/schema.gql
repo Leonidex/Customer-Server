@@ -19,10 +19,10 @@ type Customer {
 scalar Timestamp
 
 type Query {
-  customers(data: GetCustomerInput!): [Customer!]!
+  findAll(data: FindAllCustomerInput!): [Customer!]!
 }
 
-input GetCustomerInput {
+input FindAllCustomerInput {
   cursor: String
   skip: Int
   take: Int
@@ -34,4 +34,21 @@ input WhereCustomerInput {
   email: String
   createdAt: Timestamp
   updatedAt: Timestamp
+}
+
+type Mutation {
+  createOne(data: CreateCustomerInput!): Customer!
+  updateOne(data: UpdateOneCustomerInput!): Customer!
+  removeOne(data: WhereCustomerInput!): Customer!
+}
+
+input CreateCustomerInput {
+  email: String!
+  password: String!
+}
+
+input UpdateOneCustomerInput {
+  email: String
+  password: String
+  where: WhereCustomerInput
 }
