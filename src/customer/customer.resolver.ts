@@ -13,13 +13,13 @@ export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
 
   @Mutation(() => Customer)
-  async createOne(@Args('data') customer: CreateCustomerInput) {
+  async createOne(@Args('customer') customer: CreateCustomerInput) {
     return this.customerService.create(customer);
   }
 
   @Query(() => [Customer])
-  async findAll(@Args('data') filter: FindAllCustomerInput) {
-    return this.customerService.findAll(filter);
+  async findMany(@Args('filter') filter: FindAllCustomerInput) {
+    return this.customerService.findMany(filter);
   }
 
   @Mutation(() => Customer)
@@ -28,7 +28,7 @@ export class CustomerResolver {
   }
 
   @Mutation(() => Customer)
-  async removeOne(@Args('data') where: WhereCustomerInput) {
+  async removeOne(@Args('where') where: WhereCustomerInput) {
     return this.customerService.remove(where);
   }
 }

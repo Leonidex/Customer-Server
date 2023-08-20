@@ -48,11 +48,8 @@ export class FindAllCustomerInput {
 
 @InputType()
 export class UpdateOneCustomerInput {
-  @Field(() => String, { nullable: true })
-  email?: string;
-
-  @Field(() => String, { nullable: true })
-  password?: string;
+  @Field(() => CreateCustomerInput, { nullable: true })
+  customer?: CreateCustomerInput;
 
   @Field(() => WhereCustomerInput, { nullable: true })
   where: WhereCustomerInput;
