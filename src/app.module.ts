@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { join } from 'path';
 import { PrismaService } from './prisma.service';
 import { CustomerModule } from './customer/customer.module';
+import { providePrismaClientExceptionFilter } from 'nestjs-prisma';
 
 @Module({
   imports: [
@@ -23,6 +23,6 @@ import { CustomerModule } from './customer/customer.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, providePrismaClientExceptionFilter()],
 })
 export class AppModule {}
