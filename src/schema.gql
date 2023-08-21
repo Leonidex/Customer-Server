@@ -19,10 +19,10 @@ type Customer {
 scalar Timestamp
 
 type Query {
-  findMany(filter: FindAllCustomerInput!): [Customer!]!
+  findMany(filter: FindManyCustomerInput!): [Customer!]!
 }
 
-input FindAllCustomerInput {
+input FindManyCustomerInput {
   cursor: String
   skip: Int
   take: Int

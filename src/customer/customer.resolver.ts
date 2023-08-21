@@ -3,7 +3,7 @@ import { Customer } from 'lib/entities/customer.entity';
 import { CustomerService } from './customer.service';
 import {
   CreateCustomerInput,
-  FindAllCustomerInput,
+  FindManyCustomerInput,
   UpdateOneCustomerInput,
   WhereCustomerInput,
 } from './dto/customer.input';
@@ -18,7 +18,7 @@ export class CustomerResolver {
   }
 
   @Query(() => [Customer])
-  async findMany(@Args('filter') filter: FindAllCustomerInput) {
+  async findMany(@Args('filter') filter: FindManyCustomerInput) {
     return this.customerService.findMany(filter);
   }
 

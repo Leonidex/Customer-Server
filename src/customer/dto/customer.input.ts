@@ -32,7 +32,7 @@ export class FindOneCustomerInput {
 }
 
 @InputType()
-export class FindAllCustomerInput {
+export class FindManyCustomerInput {
   @Field(() => String, { nullable: true })
   cursor?: Prisma.CustomerWhereUniqueInput;
 

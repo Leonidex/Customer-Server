@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
   CreateCustomerInput,
-  FindAllCustomerInput,
+  FindManyCustomerInput,
+  FindOneCustomerInput,
   UpdateOneCustomerInput,
   WhereCustomerInput,
 } from './dto/customer.input';
@@ -16,7 +17,11 @@ export class CustomerService {
     return this.prisma.customer.create({ data });
   }
 
-  async findMany(params: FindAllCustomerInput) {
+  async findOne(params: FindOneCustomerInput) {
+    return this.prisma.customer.findUnique({ ...params });
+  }
+
+  async findMany(params: FindManyCustomerInput) {
     return this.prisma.customer.findMany({ ...params });
   }
 
