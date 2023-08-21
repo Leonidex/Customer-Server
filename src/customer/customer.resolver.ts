@@ -8,13 +8,14 @@ import {
   WhereCustomerInput,
 } from './dto/customer.input';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard, Public } from 'src/auth/auth.guard';
 
 @UseGuards(AuthGuard)
 @Resolver(() => Customer)
 export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Public()
   @Mutation(() => Customer)
   async createOne(@Args('customer') customer: CreateCustomerInput) {
     return this.customerService.create(customer);

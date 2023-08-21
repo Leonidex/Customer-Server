@@ -14,7 +14,7 @@ datasource db {
 model Customer {
   id        String   @id @unique @default(uuid())
   email     String   @unique
-  password  String
+  hashedPassword  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

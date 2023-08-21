@@ -8,13 +8,21 @@ import {
   WhereCustomerInput,
 } from './dto/customer.input';
 import { Customer } from 'lib/entities/customer.entity';
+import { hashPassword } from 'lib/utilities';
 
 @Injectable()
 export class CustomerService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateCustomerInput): Promise<Customer> {
-    return this.prisma.customer.create({ data });
+    const { email } = data;
+    const hashedPassword = await hashPassword(data.password);
+    return this.prisma.customer.create({
+      data: {
+        email,
+        hashedPassword: hashedPassword,
+      },
+    });
   }
 
   async findOne(params: FindOneCustomerInput) {
