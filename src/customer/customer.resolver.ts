@@ -7,7 +7,10 @@ import {
   UpdateOneCustomerInput,
   WhereCustomerInput,
 } from './dto/customer.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Resolver(() => Customer)
 export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
