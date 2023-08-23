@@ -5,6 +5,8 @@ import { CustomerModule } from 'src/customer/customer.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { AuthGuard } from 'src/auth/auth.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    RefreshTokenService,
+    PrismaService,
   ],
   controllers: [AuthController],
   exports: [AuthService],
