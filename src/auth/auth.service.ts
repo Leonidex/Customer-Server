@@ -18,8 +18,13 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, username: user.email };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+    // const refreshToken = await this.jwtService.signAsync(payload);
+
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      accessToken,
+      // refreshToken,
     };
   }
 }
