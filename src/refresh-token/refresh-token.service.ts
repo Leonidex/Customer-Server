@@ -14,7 +14,7 @@ export class RefreshTokenService {
       expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME || '30d',
     });
 
-    this.prisma.refreshToken.create({
+    await this.prisma.refreshToken.create({
       data: {
         hashedToken: await hashString(refreshToken),
         customerId: payload.sub,
@@ -36,7 +36,7 @@ export class RefreshTokenService {
     if (await this.refreshTokenIsValid(refreshTokenEntity)) {
       const payload = { sub: customer.id, username: customer.email };
 
-      const newRefreshToken = this.replaceRefreshToken(
+      const newRefreshToken = this.rotateRefreshToken(
         refreshTokenEntity,
         payload,
       );
@@ -85,7 +85,7 @@ export class RefreshTokenService {
     return !!refreshTokenEntity;
   }
 
-  private async replaceRefreshToken(
+  private async rotateRefreshToken(
     refreshTokenEntity: RefreshTokenEntity,
     payload: { sub: string; username: string },
   ) {

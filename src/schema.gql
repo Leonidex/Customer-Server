@@ -18,6 +18,28 @@ type CustomerEntity {
 """
 scalar Timestamp
 
+type RefreshTokenEntity {
+  id: ID!
+
+  """Date and time when object was created."""
+  createdAt: Timestamp!
+
+  """Date and time when the object was updated last time."""
+  updatedAt: Timestamp!
+  hashedToken: String!
+  customerId: String!
+}
+
+type LoginOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type SignUpOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   findMany(filter: FindManyCustomerInput!): [CustomerEntity!]!
 }
@@ -37,9 +59,16 @@ input WhereCustomerInput {
 }
 
 type Mutation {
-  createOne(customer: CreateCustomerInput!): CustomerEntity!
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
   removeOne(where: WhereCustomerInput!): CustomerEntity!
+  getNewAccessToken(data: RefreshTokenInput!): RefreshTokenEntity!
+  signUp: SignUpOutput!
+  login: LoginOutput!
+}
+
+input UpdateOneCustomerInput {
+  customer: CreateCustomerInput
+  where: WhereCustomerInput
 }
 
 input CreateCustomerInput {
@@ -47,7 +76,7 @@ input CreateCustomerInput {
   password: String!
 }
 
-input UpdateOneCustomerInput {
-  customer: CreateCustomerInput
-  where: WhereCustomerInput
+input RefreshTokenInput {
+  token: String!
+  customerId: String!
 }
