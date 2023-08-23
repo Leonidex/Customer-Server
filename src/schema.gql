@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Customer {
+type CustomerEntity {
   id: ID!
 
   """Date and time when object was created."""
@@ -19,7 +19,7 @@ type Customer {
 scalar Timestamp
 
 type Query {
-  findMany(filter: FindManyCustomerInput!): [Customer!]!
+  findMany(filter: FindManyCustomerInput!): [CustomerEntity!]!
 }
 
 input FindManyCustomerInput {
@@ -37,9 +37,9 @@ input WhereCustomerInput {
 }
 
 type Mutation {
-  createOne(customer: CreateCustomerInput!): Customer!
-  updateOne(data: UpdateOneCustomerInput!): Customer!
-  removeOne(where: WhereCustomerInput!): Customer!
+  createOne(customer: CreateCustomerInput!): CustomerEntity!
+  updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
+  removeOne(where: WhereCustomerInput!): CustomerEntity!
 }
 
 input CreateCustomerInput {
