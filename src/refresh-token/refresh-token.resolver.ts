@@ -1,11 +1,8 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { RefreshTokenEntity } from 'lib/entities/refresh-token.entity';
 import { RefreshTokenInput } from 'src/refresh-token/dto/refresh-token.input';
 
-@UseGuards(AuthGuard)
 @Resolver(() => RefreshTokenEntity)
 export class RefreshTokenResolver {
   constructor(private readonly refreshTokenService: RefreshTokenService) {}

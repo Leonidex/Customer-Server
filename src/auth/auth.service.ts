@@ -9,6 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { LoginOutput } from 'src/auth/dto/login.output';
+import { LoginInput } from 'src/auth/dto/login.input';
+import { SignUpInput } from 'src/auth/dto/sign-up.input';
+import { SignUpOutput } from 'src/auth/dto/sign-up.output';
 
 @Injectable()
 export class AuthService {
@@ -18,15 +21,19 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
   ) {}
 
-  async login(email: string, password: string): Promise<LoginOutput> {
-    const customer = await this.customerService.findOne({ where: { email } });
+  async login(credentials: LoginInput): Promise<LoginOutput> {
+    const customer = await this.customerService.findOne({
+      where: { email: credentials.email },
+    });
 
     // Might want to throw UnauthorizedException instead, for security purposes
     if (!customer) {
       throw new NotFoundException('Customer not found');
     }
 
-    if (!(await bcrypt.compare(password, customer?.hashedPassword))) {
+    if (
+      !(await bcrypt.compare(credentials.password, customer?.hashedPassword))
+    ) {
       throw new UnauthorizedException();
     }
 
@@ -45,22 +52,25 @@ export class AuthService {
 
   /**
    * Registers a new customer to the system.
-   * @param email
-   * @param password
    * Returns access and refresh tokens.
+   * @param credentials
    */
-  async signUp(email: string, password: string): Promise<LoginOutput> {
-    if (await this.customerService.findOne({ where: { email } })) {
+  async signUp(credentials: SignUpInput): Promise<SignUpOutput> {
+    if (
+      await this.customerService.findOne({
+        where: { email: credentials.email },
+      })
+    ) {
       throw new ConflictException('Customer already exists');
     }
 
     const customerEntity = await this.customerService.create({
-      email,
-      password,
+      email: credentials.email,
+      password: credentials.password,
     });
 
     if (customerEntity) {
-      return this.login(email, password);
+      return this.login(credentials);
     }
   }
 }

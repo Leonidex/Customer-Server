@@ -62,8 +62,8 @@ type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
   removeOne(where: WhereCustomerInput!): CustomerEntity!
   getNewAccessToken(data: RefreshTokenInput!): RefreshTokenEntity!
-  signUp: SignUpOutput!
-  login: LoginOutput!
+  signUp(credentials: SignUpInput!): SignUpOutput!
+  login(credentials: LoginInput!): LoginOutput!
 }
 
 input UpdateOneCustomerInput {
@@ -79,4 +79,14 @@ input CreateCustomerInput {
 input RefreshTokenInput {
   token: String!
   customerId: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
