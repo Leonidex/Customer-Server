@@ -23,7 +23,6 @@ export class AuthService {
 
     const accessToken = await this.jwtService.signAsync(payload);
     const refreshToken = await this.refreshTokenService.createRefreshToken(
-      customer.id,
       payload,
     );
 
