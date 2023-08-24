@@ -7,6 +7,8 @@ import { join } from 'path';
 import { PrismaService } from './prisma.service';
 import { CustomerModule } from './customer/customer.module';
 import { providePrismaClientExceptionFilter } from 'nestjs-prisma';
+import { AuthModule } from './auth/auth.module';
+import { RefreshTokenModule } from './refresh-token/refresh-token.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { providePrismaClientExceptionFilter } from 'nestjs-prisma';
       playground: true,
       introspection: true, // TODO update this so that it's off in production;
     }),
+    AuthModule,
+    RefreshTokenModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, providePrismaClientExceptionFilter()],

@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Customer {
+type CustomerEntity {
   id: ID!
 
   """Date and time when object was created."""
@@ -18,11 +18,21 @@ type Customer {
 """
 scalar Timestamp
 
-type Query {
-  findMany(filter: FindAllCustomerInput!): [Customer!]!
+type LoginOutput {
+  accessToken: String!
+  refreshToken: String!
 }
 
-input FindAllCustomerInput {
+type SignUpOutput {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Query {
+  findMany(filter: FindManyCustomerInput!): [CustomerEntity!]!
+}
+
+input FindManyCustomerInput {
   cursor: String
   skip: Int
   take: Int
@@ -37,9 +47,16 @@ input WhereCustomerInput {
 }
 
 type Mutation {
-  createOne(customer: CreateCustomerInput!): Customer!
-  updateOne(data: UpdateOneCustomerInput!): Customer!
-  removeOne(where: WhereCustomerInput!): Customer!
+  updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
+  removeOne(where: WhereCustomerInput!): CustomerEntity!
+  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
+  signUp(credentials: SignUpInput!): SignUpOutput!
+  login(credentials: LoginInput!): LoginOutput!
+}
+
+input UpdateOneCustomerInput {
+  customer: CreateCustomerInput
+  where: WhereCustomerInput
 }
 
 input CreateCustomerInput {
@@ -47,7 +64,17 @@ input CreateCustomerInput {
   password: String!
 }
 
-input UpdateOneCustomerInput {
-  customer: CreateCustomerInput
-  where: WhereCustomerInput
+input RefreshTokenInput {
+  token: String!
+  customerId: String!
+}
+
+input SignUpInput {
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }

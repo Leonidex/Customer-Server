@@ -14,7 +14,18 @@ datasource db {
 model Customer {
   id        String   @id @unique @default(uuid())
   email     String   @unique
-  password  String
+  hashedPassword  String
+  refreshTokens RefreshToken[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @unique @default(uuid())
+  hashedToken     String
+  customer  Customer @relation(fields: [customerId], references: [id])
+  customerId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expirationDate DateTime @default(now())
 }
