@@ -18,18 +18,6 @@ type CustomerEntity {
 """
 scalar Timestamp
 
-type RefreshTokenEntity {
-  id: ID!
-
-  """Date and time when object was created."""
-  createdAt: Timestamp!
-
-  """Date and time when the object was updated last time."""
-  updatedAt: Timestamp!
-  hashedToken: String!
-  customerId: String!
-}
-
 type LoginOutput {
   accessToken: String!
   refreshToken: String!
@@ -61,7 +49,7 @@ input WhereCustomerInput {
 type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
   removeOne(where: WhereCustomerInput!): CustomerEntity!
-  getNewAccessToken(data: RefreshTokenInput!): RefreshTokenEntity!
+  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
   signUp(credentials: SignUpInput!): SignUpOutput!
   login(credentials: LoginInput!): LoginOutput!
 }

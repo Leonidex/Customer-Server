@@ -12,6 +12,7 @@ import { LoginOutput } from 'src/auth/dto/login.output';
 import { LoginInput } from 'src/auth/dto/login.input';
 import { SignUpInput } from 'src/auth/dto/sign-up.input';
 import { SignUpOutput } from 'src/auth/dto/sign-up.output';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,11 @@ export class AuthService {
 
     const payload = { sub: customer.id, username: customer.email };
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync({
+      ...payload,
+      iat: Date.now(),
+      jti: uuidv4(),
+    });
     const refreshToken = await this.refreshTokenService.createRefreshToken(
       payload,
     );

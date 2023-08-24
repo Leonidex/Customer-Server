@@ -8,4 +8,7 @@ export class RefreshTokenEntity extends BaseEntity {
 
   @Field(() => String)
   customerId: string;
+
+  @Field(() => Date)
+  expirationDate: Date;
 }

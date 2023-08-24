@@ -24,7 +24,8 @@ model RefreshToken {
   id        String   @id @unique @default(uuid())
   hashedToken     String
   customer  Customer @relation(fields: [customerId], references: [id])
-  customerId String  @unique
+  customerId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  expirationDate DateTime @default(now())
 }

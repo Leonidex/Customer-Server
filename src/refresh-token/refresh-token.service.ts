@@ -1,29 +1,49 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma.service';
-import { hashString } from 'lib/utilities';
+import { hashString, parseDurationString } from 'lib/utilities';
 import { RefreshTokenEntity } from 'lib/entities/refresh-token.entity';
 import { RefreshTokenInput } from 'src/refresh-token/dto/refresh-token.input';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import * as moment from 'moment';
 
 @Injectable()
 export class RefreshTokenService {
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
+
+  /**
+   * Creates a new refresh token.
+   * @param payload
+   * Returns a new refresh token.
+   */
   async createRefreshToken(payload: { sub: string; username: string }) {
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME || '30d',
-    });
+    const refreshToken = uuidv4();
+
+    const { value, unit } = parseDurationString(
+      process.env.REFRESH_TOKEN_EXPIRATION_TIME,
+    );
+
+    const expirationDate = moment().add(value, unit).toDate();
+    const hashedToken = await hashString(refreshToken);
+    const customerId = payload.sub;
 
     await this.prisma.refreshToken.create({
       data: {
-        hashedToken: await hashString(refreshToken),
-        customerId: payload.sub,
+        hashedToken,
+        customerId,
+        expirationDate,
       },
     });
 
     return refreshToken;
   }
 
+  /**
+   * Creates a new access token if the refresh token is valid.
+   * @param refreshTokenInput
+   * Returns a new access token.
+   */
   async getNewAccessToken(refreshTokenInput: RefreshTokenInput) {
     const customer = await this.prisma.customer.findUnique({
       where: {
@@ -36,11 +56,17 @@ export class RefreshTokenService {
     if (await this.refreshTokenIsValid(refreshTokenEntity)) {
       const payload = { sub: customer.id, username: customer.email };
 
-      const newRefreshToken = this.rotateRefreshToken(
+      const newRefreshToken = await this.rotateRefreshToken(
         refreshTokenEntity,
         payload,
       );
-      const accessToken = this.jwtService.signAsync(payload);
+
+      const accessToken = await this.jwtService.signAsync({
+        ...payload,
+        iat: Date.now(),
+        jti: uuidv4(),
+      });
+
       return {
         accessToken,
         refreshToken: newRefreshToken,
@@ -65,8 +91,8 @@ export class RefreshTokenService {
       },
     });
 
-    const relevantToken = fetchedTokens.find(async (fetchedToken) => {
-      return await bcrypt.compare(
+    const relevantToken = fetchedTokens.find((fetchedToken) => {
+      return bcrypt.compareSync(
         refreshTokenInput.token,
         fetchedToken.hashedToken,
       );
@@ -78,13 +104,28 @@ export class RefreshTokenService {
   /**
    * Validates a refresh token object.
    * @param refreshTokenEntity
+   * Returns a boolean.
    */
   async refreshTokenIsValid(
     refreshTokenEntity: RefreshTokenEntity,
   ): Promise<boolean> {
-    return !!refreshTokenEntity;
+    if (!refreshTokenEntity) {
+      return false;
+    }
+
+    if (moment(refreshTokenEntity.expirationDate).isBefore(moment())) {
+      return false;
+    }
+    return true;
   }
 
+  /**
+   * Rotates an existing refresh token if it is valid.
+   * @param refreshTokenEntity
+   * @param payload
+   * @private
+   * Returns a new refresh token.
+   */
   private async rotateRefreshToken(
     refreshTokenEntity: RefreshTokenEntity,
     payload: { sub: string; username: string },
