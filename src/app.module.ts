@@ -9,10 +9,10 @@ import { CustomerModule } from './customer/customer.module';
 import { providePrismaClientExceptionFilter } from 'nestjs-prisma';
 import { AuthModule } from './auth/auth.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
+import { VerificationModule } from './verification/verification.module';
 
 @Module({
   imports: [
-    CustomerModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -23,8 +23,10 @@ import { RefreshTokenModule } from './refresh-token/refresh-token.module';
       playground: true,
       introspection: true, // TODO update this so that it's off in production;
     }),
+    CustomerModule,
     AuthModule,
     RefreshTokenModule,
+    VerificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, providePrismaClientExceptionFilter()],
