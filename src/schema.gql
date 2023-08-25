@@ -69,13 +69,13 @@ type Mutation {
 }
 
 input UpdateOneCustomerInput {
-  customer: CreateCustomerInput!
+  customer: UpdateCustomerInput!
   where: WhereCustomerInput
 }
 
-input CreateCustomerInput {
-  email: String!
-  password: String!
+input UpdateCustomerInput {
+  email: String
+  password: String
 }
 
 input ActivateOneCustomerInput {
