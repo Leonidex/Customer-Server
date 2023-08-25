@@ -1,15 +1,15 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CustomerEntity } from 'lib/entities/customer.entity';
-import { AuthService } from 'src/auth/auth.service';
-import { LoginOutput } from 'src/auth/dto/login.output';
-import { SignUpOutput } from 'src/auth/dto/sign-up.output';
-import { SignUpInput } from 'src/auth/dto/sign-up.input';
-import { LoginInput } from 'src/auth/dto/login.input';
-import { Public } from 'src/auth/auth.guard';
+import { AuthenticationService } from 'src/authentication/authentication.service';
+import { LoginOutput } from 'src/authentication/dto/login.output';
+import { SignUpOutput } from 'src/authentication/dto/sign-up.output';
+import { SignUpInput } from 'src/authentication/dto/sign-up.input';
+import { LoginInput } from 'src/authentication/dto/login.input';
+import { Public } from 'src/authentication/authentication.guard';
 
 @Resolver(() => CustomerEntity)
-export class AuthResolver {
-  constructor(private authService: AuthService) {}
+export class AuthenticationResolver {
+  constructor(private authService: AuthenticationService) {}
 
   @Public()
   @Mutation(() => SignUpOutput)

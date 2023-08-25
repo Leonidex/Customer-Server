@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { AuthenticationService } from './authentication.service';
 import { CustomerModule } from 'src/customer/customer.module';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthenticationGuard } from 'src/authentication/authentication.guard';
 import { PrismaService } from 'src/prisma.service';
-import { AuthResolver } from './auth.resolver';
+import { AuthenticationResolver } from './authentication.resolver';
 import { VerificationModule } from 'src/verification/verification.module';
 import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
 
@@ -23,14 +23,14 @@ import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
     RefreshTokenModule,
   ],
   providers: [
-    AuthService,
-    AuthResolver,
+    AuthenticationService,
+    AuthenticationResolver,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: AuthenticationGuard,
     },
     PrismaService,
   ],
-  exports: [AuthService],
+  exports: [AuthenticationService],
 })
-export class AuthModule {}
+export class AuthenticationModule {}
