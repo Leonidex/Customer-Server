@@ -24,7 +24,7 @@ export class AuthService {
 
   async login(credentials: LoginInput): Promise<LoginOutput> {
     const customer = await this.customerService.findOne({
-      where: { email: credentials.email },
+      email: credentials.email,
     });
 
     // Might want to throw UnauthorizedException instead, for security purposes
@@ -63,7 +63,7 @@ export class AuthService {
   async signUp(credentials: SignUpInput): Promise<SignUpOutput> {
     if (
       await this.customerService.findOne({
-        where: { email: credentials.email },
+        email: credentials.email,
       })
     ) {
       throw new ConflictException('Customer already exists');

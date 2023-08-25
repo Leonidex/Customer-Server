@@ -18,6 +18,15 @@ type CustomerEntity {
 """
 scalar Timestamp
 
+type RequestStatusOutput {
+  status: RequestStatusEnum!
+}
+
+enum RequestStatusEnum {
+  SUCCESS
+  FAILURE
+}
+
 type LoginOutput {
   accessToken: String!
   refreshToken: String!
@@ -36,26 +45,31 @@ input FindManyCustomerInput {
   cursor: String
   skip: Int
   take: Int
-  where: WhereCustomerInput
+  where: WhereCustomerInput!
 }
 
 input WhereCustomerInput {
-  id: String
-  email: String
+  identifier: WhereUniqueCustomerInput!
   createdAt: Timestamp
   updatedAt: Timestamp
 }
 
+input WhereUniqueCustomerInput {
+  id: String
+  email: String
+}
+
 type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
-  removeOne(where: WhereCustomerInput!): CustomerEntity!
-  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
+  removeOne(where: WhereUniqueCustomerInput!): CustomerEntity!
+  activateCustomer(data: ActivateOneCustomerInput!): RequestStatusOutput!
   signUp(credentials: SignUpInput!): SignUpOutput!
   login(credentials: LoginInput!): LoginOutput!
+  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
 }
 
 input UpdateOneCustomerInput {
-  customer: CreateCustomerInput
+  customer: CreateCustomerInput!
   where: WhereCustomerInput
 }
 
@@ -64,9 +78,9 @@ input CreateCustomerInput {
   password: String!
 }
 
-input RefreshTokenInput {
-  token: String!
-  customerId: String!
+input ActivateOneCustomerInput {
+  where: WhereCustomerInput!
+  activationCode: String!
 }
 
 input SignUpInput {
@@ -77,4 +91,9 @@ input SignUpInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input RefreshTokenInput {
+  token: String!
+  cursor: String!
 }

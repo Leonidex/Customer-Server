@@ -2,12 +2,18 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
 
 @InputType()
-export class WhereCustomerInput {
+export class WhereUniqueCustomerInput {
   @Field(() => String, { nullable: true })
   id?: string;
 
   @Field(() => String, { nullable: true })
   email?: string;
+}
+
+@InputType()
+export class WhereCustomerInput {
+  @Field(() => WhereUniqueCustomerInput)
+  identifier: WhereUniqueCustomerInput;
 
   @Field(() => Date, { nullable: true })
   createdAt?: Date;
@@ -26,12 +32,6 @@ export class CreateCustomerInput {
 }
 
 @InputType()
-export class FindOneCustomerInput {
-  @Field(() => WhereCustomerInput, { nullable: true })
-  where: WhereCustomerInput;
-}
-
-@InputType()
 export class FindManyCustomerInput {
   @Field(() => String, { nullable: true })
   cursor?: Prisma.CustomerWhereUniqueInput;
@@ -42,13 +42,13 @@ export class FindManyCustomerInput {
   @Field(() => Int, { nullable: true })
   take: number;
 
-  @Field(() => WhereCustomerInput, { nullable: true })
+  @Field(() => WhereCustomerInput)
   where: WhereCustomerInput;
 }
 
 @InputType()
 export class UpdateOneCustomerInput {
-  @Field(() => CreateCustomerInput, { nullable: true })
+  @Field(() => CreateCustomerInput)
   customer?: CreateCustomerInput;
 
   @Field(() => WhereCustomerInput, { nullable: true })

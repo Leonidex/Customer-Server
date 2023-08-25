@@ -4,7 +4,7 @@ import { CustomerService } from './customer.service';
 import {
   FindManyCustomerInput,
   UpdateOneCustomerInput,
-  WhereCustomerInput,
+  WhereUniqueCustomerInput,
 } from './dto/customer.input';
 
 @Resolver(() => CustomerEntity)
@@ -22,7 +22,7 @@ export class CustomerResolver {
   }
 
   @Mutation(() => CustomerEntity)
-  async removeOne(@Args('where') where: WhereCustomerInput) {
+  async removeOne(@Args('where') where: WhereUniqueCustomerInput) {
     return this.customerService.remove(where);
   }
 }

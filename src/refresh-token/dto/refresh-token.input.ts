@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { WhereUniqueCustomerInput } from 'src/customer/dto/customer.input';
 
 @InputType()
 export class RefreshTokenInput {
@@ -6,5 +7,5 @@ export class RefreshTokenInput {
   token: string;
 
   @Field(() => String)
-  customerId: string;
+  cursor: WhereUniqueCustomerInput;
 }

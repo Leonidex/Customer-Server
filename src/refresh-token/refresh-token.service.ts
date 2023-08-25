@@ -7,6 +7,7 @@ import { RefreshTokenInput } from 'src/refresh-token/dto/refresh-token.input';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment';
+import { Customer } from '@prisma/client';
 
 @Injectable()
 export class RefreshTokenService {
@@ -47,11 +48,14 @@ export class RefreshTokenService {
   async getNewAccessToken(refreshTokenInput: RefreshTokenInput) {
     const customer = await this.prisma.customer.findUnique({
       where: {
-        id: refreshTokenInput.customerId,
+        ...refreshTokenInput.cursor,
       },
     });
 
-    const refreshTokenEntity = await this.fetchRefreshToken(refreshTokenInput);
+    const refreshTokenEntity = await this.fetchRefreshToken(
+      refreshTokenInput.token,
+      customer,
+    );
 
     if (await this.refreshTokenIsValid(refreshTokenEntity)) {
       const payload = { sub: customer.id, username: customer.email };
@@ -78,24 +82,23 @@ export class RefreshTokenService {
 
   /**
    * Fetches a refresh token object from the database.
-   * @param refreshTokenInput
+   * @param refreshToken
+   * @param customer
    * @private
    * Returns RefreshToken object, or null if none found.
    */
   private async fetchRefreshToken(
-    refreshTokenInput: RefreshTokenInput,
+    refreshToken: string,
+    customer: Customer,
   ): Promise<RefreshTokenEntity> {
     const fetchedTokens = await this.prisma.refreshToken.findMany({
       where: {
-        customerId: refreshTokenInput.customerId,
+        customerId: customer.id,
       },
     });
 
     const relevantToken = fetchedTokens.find((fetchedToken) => {
-      return bcrypt.compareSync(
-        refreshTokenInput.token,
-        fetchedToken.hashedToken,
-      );
+      return bcrypt.compareSync(refreshToken, fetchedToken.hashedToken);
     });
 
     return relevantToken;
