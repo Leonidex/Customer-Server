@@ -19,7 +19,10 @@ import { VerificationModule } from './verification/verification.module';
       buildSchemaOptions: {
         dateScalarMode: 'timestamp',
       },
-      context: ({ request, reply }) => ({ request, reply }),
+      context: ({ request, reply }) => ({
+        request,
+        reply,
+      }),
       playground: true,
       introspection: true, // TODO update this so that it's off in production;
     }),

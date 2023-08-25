@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { WhereCustomerInput } from 'src/customer/dto/customer.input';
+import { WhereUniqueCustomerInput } from 'src/customer/dto/customer.input';
 
 @InputType()
 export class ActivateOneCustomerInput {
-  @Field(() => WhereCustomerInput)
-  where: WhereCustomerInput;
+  @Field(() => WhereUniqueCustomerInput)
+  where: WhereUniqueCustomerInput;
 
   @Field(() => String)
   activationCode: string;

@@ -18,7 +18,7 @@ model Customer {
   refreshTokens RefreshToken[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  activationCode String
+  activationCode ActivationCode?
   status    StatusEnum @default(INITIAL)
 }
 
@@ -27,6 +27,16 @@ model RefreshToken {
   hashedToken     String
   customer  Customer @relation(fields: [customerId], references: [id])
   customerId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expirationDate DateTime @default(now())
+}
+
+model ActivationCode {
+  id        String   @id @unique @default(uuid())
+  code      String
+  customer  Customer @relation(fields: [customerId], references: [id])
+  customerId String  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   expirationDate DateTime @default(now())

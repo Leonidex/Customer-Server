@@ -9,7 +9,7 @@ import {
 import { CustomerEntity } from 'lib/entities/customer.entity';
 import { hashString } from 'lib/utilities';
 import { JwtService } from '@nestjs/jwt';
-import { StatusEnum } from '@prisma/client';
+import { Customer, StatusEnum } from '@prisma/client';
 import { VerificationService } from 'src/verification/verification.service';
 
 @Injectable()
@@ -23,17 +23,18 @@ export class CustomerService {
   async create(credentials: CreateCustomerInput): Promise<CustomerEntity> {
     const { email } = credentials;
     const hashedPassword = await hashString(credentials.password);
-    const activationCode =
-      await this.verificationService.generateActivationCode(email);
 
-    return this.prisma.customer.create({
+    const customer: Customer = await this.prisma.customer.create({
       data: {
         email,
         hashedPassword,
-        // activationCode,
         status: StatusEnum.INITIAL,
       },
     });
+
+    await this.verificationService.createActivationCode(customer);
+
+    return customer;
   }
 
   async findOne(where: WhereUniqueCustomerInput) {

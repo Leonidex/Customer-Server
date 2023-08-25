@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RequestStatusOutput {
+  status: RequestStatusEnum!
+}
+
+enum RequestStatusEnum {
+  SUCCESS
+  FAILURE
+}
+
 type CustomerEntity {
   id: ID!
 
@@ -18,13 +27,17 @@ type CustomerEntity {
 """
 scalar Timestamp
 
-type RequestStatusOutput {
-  status: RequestStatusEnum!
-}
+type ActivationCodeEntity {
+  id: ID!
 
-enum RequestStatusEnum {
-  SUCCESS
-  FAILURE
+  """Date and time when object was created."""
+  createdAt: Timestamp!
+
+  """Date and time when the object was updated last time."""
+  updatedAt: Timestamp!
+  code: String!
+  customerId: String!
+  expirationDate: Timestamp!
 }
 
 type LoginOutput {
@@ -63,6 +76,7 @@ type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
   removeOne(where: WhereUniqueCustomerInput!): CustomerEntity!
   activateCustomer(data: ActivateOneCustomerInput!): RequestStatusOutput!
+  regenerateActivationCode: ActivationCodeEntity!
   signUp(credentials: SignUpInput!): SignUpOutput!
   login(credentials: LoginInput!): LoginOutput!
   getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
@@ -79,7 +93,7 @@ input UpdateCustomerInput {
 }
 
 input ActivateOneCustomerInput {
-  where: WhereCustomerInput!
+  where: WhereUniqueCustomerInput!
   activationCode: String!
 }
 
