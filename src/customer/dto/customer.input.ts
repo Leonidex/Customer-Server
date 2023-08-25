@@ -32,6 +32,15 @@ export class CreateCustomerInput {
 }
 
 @InputType()
+export class UpdateCustomerInput {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
+}
+
+@InputType()
 export class FindManyCustomerInput {
   @Field(() => String, { nullable: true })
   cursor?: Prisma.CustomerWhereUniqueInput;
@@ -48,8 +57,8 @@ export class FindManyCustomerInput {
 
 @InputType()
 export class UpdateOneCustomerInput {
-  @Field(() => CreateCustomerInput)
-  customer?: CreateCustomerInput;
+  @Field(() => UpdateCustomerInput)
+  customer?: UpdateCustomerInput;
 
   @Field(() => WhereCustomerInput, { nullable: true })
   where: WhereCustomerInput;
