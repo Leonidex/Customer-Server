@@ -55,7 +55,7 @@ export class CustomerService {
       },
       ...filter
     } = params;
-    console.log('createdBefore:', createdBefore);
+
     return this.prisma.customer.findMany({
       ...filter,
       where: {
