@@ -5,13 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { GqlExecutionContext } from '@nestjs/graphql';
-
-import { SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-
-export const IS_PUBLIC_KEY = 'isPublic';
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+import { getRequestFromContext } from 'lib/utilities';
+import { IS_PUBLIC_KEY } from 'lib/decorators/public.decorator';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -27,9 +23,7 @@ export class AuthenticationGuard implements CanActivate {
       return true;
     }
 
-    const request =
-      context.switchToHttp().getRequest() ||
-      GqlExecutionContext.create(context).getContext().req;
+    const request = getRequestFromContext(context);
     const authorization =
       request?.headers?.authorization || request?.get('Authorization');
 
@@ -43,7 +37,7 @@ export class AuthenticationGuard implements CanActivate {
     }
 
     try {
-      request['user'] = await this.jwtService.verifyAsync(token, {
+      request.user = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
     } catch {

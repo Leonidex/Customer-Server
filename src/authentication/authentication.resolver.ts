@@ -5,7 +5,7 @@ import { LoginOutput } from 'src/authentication/dto/login.output';
 import { SignUpOutput } from 'src/authentication/dto/sign-up.output';
 import { SignUpInput } from 'src/authentication/dto/sign-up.input';
 import { LoginInput } from 'src/authentication/dto/login.input';
-import { Public } from 'src/authentication/authentication.guard';
+import { Public } from 'lib/decorators/public.decorator';
 
 @Resolver(() => CustomerEntity)
 export class AuthenticationResolver {

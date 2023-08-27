@@ -7,5 +7,5 @@ export class RefreshTokenInput {
   token: string;
 
   @Field(() => String)
-  cursor: WhereUniqueCustomerInput;
+  identifier: WhereUniqueCustomerInput;
 }

@@ -4,11 +4,10 @@ import {
   Injectable,
   SetMetadata,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { Customer, RolesEnum } from '@prisma/client';
 import { CustomerService } from 'src/customer/customer.service';
+import { getRequestFromContext } from 'lib/utilities';
 
 export const ROLES_KEY = 'roles';
 
@@ -29,9 +28,7 @@ export class AuthorizationGuard implements CanActivate {
       return true;
     }
 
-    const request =
-      context.switchToHttp().getRequest() ||
-      GqlExecutionContext.create(context).getContext().req;
+    const request = getRequestFromContext(context);
     const customerId = request.user.sub;
 
     const customer: Customer = await this.customerService.findOne({

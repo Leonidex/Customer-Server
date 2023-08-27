@@ -48,7 +48,7 @@ export class RefreshTokenService {
   async getNewAccessToken(refreshTokenInput: RefreshTokenInput) {
     const customer = await this.prisma.customer.findUnique({
       where: {
-        ...refreshTokenInput.cursor,
+        ...refreshTokenInput.identifier,
       },
     });
 
