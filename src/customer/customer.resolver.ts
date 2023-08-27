@@ -4,8 +4,10 @@ import { CustomerService } from './customer.service';
 import {
   FindManyCustomerInput,
   UpdateOneCustomerInput,
-  WhereCustomerInput,
+  WhereUniqueCustomerInput,
 } from './dto/customer.input';
+import { RolesEnum } from '@prisma/client';
+import { Roles } from 'src/authorization/authorization.guard';
 
 @Resolver(() => CustomerEntity)
 export class CustomerResolver {
@@ -16,13 +18,15 @@ export class CustomerResolver {
     return this.customerService.findMany(filter);
   }
 
+  @Roles(RolesEnum.ADMIN)
   @Mutation(() => CustomerEntity)
   async updateOne(@Args('data') update: UpdateOneCustomerInput) {
     return this.customerService.update(update);
   }
 
+  @Roles(RolesEnum.ADMIN)
   @Mutation(() => CustomerEntity)
-  async removeOne(@Args('where') where: WhereCustomerInput) {
+  async removeOne(@Args('where') where: WhereUniqueCustomerInput) {
     return this.customerService.remove(where);
   }
 }

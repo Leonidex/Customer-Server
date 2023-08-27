@@ -8,14 +8,14 @@ import { CustomerService } from 'src/customer/customer.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
-import { LoginOutput } from 'src/auth/dto/login.output';
-import { LoginInput } from 'src/auth/dto/login.input';
-import { SignUpInput } from 'src/auth/dto/sign-up.input';
-import { SignUpOutput } from 'src/auth/dto/sign-up.output';
+import { LoginOutput } from 'src/authentication/dto/login.output';
+import { LoginInput } from 'src/authentication/dto/login.input';
+import { SignUpInput } from 'src/authentication/dto/sign-up.input';
+import { SignUpOutput } from 'src/authentication/dto/sign-up.output';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class AuthService {
+export class AuthenticationService {
   constructor(
     private customerService: CustomerService,
     private jwtService: JwtService,
@@ -24,7 +24,7 @@ export class AuthService {
 
   async login(credentials: LoginInput): Promise<LoginOutput> {
     const customer = await this.customerService.findOne({
-      where: { email: credentials.email },
+      email: credentials.email,
     });
 
     // Might want to throw UnauthorizedException instead, for security purposes
@@ -63,7 +63,7 @@ export class AuthService {
   async signUp(credentials: SignUpInput): Promise<SignUpOutput> {
     if (
       await this.customerService.findOne({
-        where: { email: credentials.email },
+        email: credentials.email,
       })
     ) {
       throw new ConflictException('Customer already exists');

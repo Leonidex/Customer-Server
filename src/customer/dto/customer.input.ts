@@ -1,40 +1,45 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
 
 @InputType()
-export class WhereCustomerInput {
+export class WhereUniqueCustomerInput {
   @Field(() => String, { nullable: true })
   id?: string;
 
   @Field(() => String, { nullable: true })
   email?: string;
-
-  @Field(() => Date, { nullable: true })
-  createdAt?: Date;
-
-  @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
 }
 
 @InputType()
-export class CreateCustomerInput {
-  @Field(() => String, {})
-  email: string;
+export class WhereCustomerInput {
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  identifier?: WhereUniqueCustomerInput;
 
-  @Field(() => String, {})
-  password: string;
+  @Field(() => Date, { nullable: true })
+  createdBefore?: Date;
+
+  @Field(() => Date, { nullable: true })
+  updatedBefore?: Date;
+
+  @Field(() => Date, { nullable: true })
+  createdAfter?: Date;
+
+  @Field(() => Date, { nullable: true })
+  updatedAfter?: Date;
 }
 
 @InputType()
-export class FindOneCustomerInput {
-  @Field(() => WhereCustomerInput, { nullable: true })
-  where: WhereCustomerInput;
+export class UpdateCustomerInput {
+  @Field(() => String, { nullable: true })
+  email?: string;
+
+  @Field(() => String, { nullable: true })
+  password?: string;
 }
 
 @InputType()
 export class FindManyCustomerInput {
-  @Field(() => String, { nullable: true })
-  cursor?: Prisma.CustomerWhereUniqueInput;
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  cursor?: WhereUniqueCustomerInput;
 
   @Field(() => Int, { nullable: true })
   skip: number;
@@ -42,15 +47,15 @@ export class FindManyCustomerInput {
   @Field(() => Int, { nullable: true })
   take: number;
 
-  @Field(() => WhereCustomerInput, { nullable: true })
+  @Field(() => WhereCustomerInput)
   where: WhereCustomerInput;
 }
 
 @InputType()
 export class UpdateOneCustomerInput {
-  @Field(() => CreateCustomerInput, { nullable: true })
-  customer?: CreateCustomerInput;
+  @Field(() => UpdateCustomerInput)
+  customer?: UpdateCustomerInput;
 
-  @Field(() => WhereCustomerInput, { nullable: true })
-  where: WhereCustomerInput;
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  where: WhereUniqueCustomerInput;
 }

@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RequestStatusOutput {
+  status: RequestStatusEnum!
+}
+
+enum RequestStatusEnum {
+  SUCCESS
+  FAILURE
+}
+
 type CustomerEntity {
   id: ID!
 
@@ -18,6 +27,19 @@ type CustomerEntity {
 """
 scalar Timestamp
 
+type ActivationCodeEntity {
+  id: ID!
+
+  """Date and time when object was created."""
+  createdAt: Timestamp!
+
+  """Date and time when the object was updated last time."""
+  updatedAt: Timestamp!
+  code: String!
+  customerId: String!
+  expirationDate: Timestamp!
+}
+
 type LoginOutput {
   accessToken: String!
   refreshToken: String!
@@ -33,40 +55,48 @@ type Query {
 }
 
 input FindManyCustomerInput {
-  cursor: String
+  cursor: WhereUniqueCustomerInput
   skip: Int
   take: Int
-  where: WhereCustomerInput
+  where: WhereCustomerInput!
+}
+
+input WhereUniqueCustomerInput {
+  id: String
+  email: String
 }
 
 input WhereCustomerInput {
-  id: String
-  email: String
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  identifier: WhereUniqueCustomerInput
+  createdBefore: Timestamp
+  updatedBefore: Timestamp
+  createdAfter: Timestamp
+  updatedAfter: Timestamp
 }
 
 type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
-  removeOne(where: WhereCustomerInput!): CustomerEntity!
-  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
+  removeOne(where: WhereUniqueCustomerInput!): CustomerEntity!
+  activateCustomer(data: ActivateOneCustomerInput!): RequestStatusOutput!
+  regenerateActivationCode: ActivationCodeEntity!
   signUp(credentials: SignUpInput!): SignUpOutput!
   login(credentials: LoginInput!): LoginOutput!
+  getNewAccessToken(data: RefreshTokenInput!): LoginOutput!
 }
 
 input UpdateOneCustomerInput {
-  customer: CreateCustomerInput
-  where: WhereCustomerInput
+  customer: UpdateCustomerInput!
+  where: WhereUniqueCustomerInput
 }
 
-input CreateCustomerInput {
-  email: String!
-  password: String!
+input UpdateCustomerInput {
+  email: String
+  password: String
 }
 
-input RefreshTokenInput {
-  token: String!
-  customerId: String!
+input ActivateOneCustomerInput {
+  where: WhereUniqueCustomerInput!
+  activationCode: String!
 }
 
 input SignUpInput {
@@ -77,4 +107,9 @@ input SignUpInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input RefreshTokenInput {
+  token: String!
+  identifier: String!
 }

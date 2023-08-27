@@ -1,36 +1,76 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
-  CreateCustomerInput,
   FindManyCustomerInput,
-  FindOneCustomerInput,
   UpdateOneCustomerInput,
-  WhereCustomerInput,
+  WhereUniqueCustomerInput,
 } from './dto/customer.input';
 import { CustomerEntity } from 'lib/entities/customer.entity';
 import { hashString } from 'lib/utilities';
+import { JwtService } from '@nestjs/jwt';
+import { Customer, StatusEnum } from '@prisma/client';
+import { VerificationService } from 'src/verification/verification.service';
+import { SignUpInput } from 'src/authentication/dto/sign-up.input';
 
 @Injectable()
 export class CustomerService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private verificationService: VerificationService,
+  ) {}
 
-  async create(data: CreateCustomerInput): Promise<CustomerEntity> {
-    const { email } = data;
-    const hashedPassword = await hashString(data.password);
-    return this.prisma.customer.create({
+  async create(credentials: SignUpInput): Promise<CustomerEntity> {
+    const { email } = credentials;
+    const hashedPassword = await hashString(credentials.password);
+
+    const customer: Customer = await this.prisma.customer.create({
       data: {
         email,
-        hashedPassword: hashedPassword,
+        hashedPassword,
+        status: StatusEnum.INITIAL,
       },
+    });
+
+    await this.verificationService.createActivationCode(customer);
+
+    return customer;
+  }
+
+  async findOne(where: WhereUniqueCustomerInput) {
+    return this.prisma.customer.findUnique({
+      where,
     });
   }
 
-  async findOne(params: FindOneCustomerInput) {
-    return this.prisma.customer.findUnique({ ...params });
-  }
-
   async findMany(params: FindManyCustomerInput) {
-    return this.prisma.customer.findMany({ ...params });
+    const {
+      where: {
+        identifier,
+        updatedBefore,
+        updatedAfter,
+        createdBefore,
+        createdAfter,
+        ...where
+      },
+      ...filter
+    } = params;
+
+    return this.prisma.customer.findMany({
+      ...filter,
+      where: {
+        ...where,
+        ...identifier,
+        createdAt: {
+          lt: createdBefore,
+          gt: createdAfter,
+        },
+        updatedAt: {
+          lt: updatedBefore,
+          gt: updatedAfter,
+        },
+      },
+    });
   }
 
   async update(params: UpdateOneCustomerInput): Promise<CustomerEntity> {
@@ -42,7 +82,9 @@ export class CustomerService {
     });
   }
 
-  async remove(where: WhereCustomerInput): Promise<CustomerEntity> {
-    return this.prisma.customer.delete({ where });
+  async remove(where: WhereUniqueCustomerInput): Promise<CustomerEntity> {
+    return this.prisma.customer.delete({
+      where,
+    });
   }
 }
