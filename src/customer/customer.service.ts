@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
-  CreateCustomerInput,
   FindManyCustomerInput,
   UpdateOneCustomerInput,
   WhereUniqueCustomerInput,
@@ -11,6 +10,7 @@ import { hashString } from 'lib/utilities';
 import { JwtService } from '@nestjs/jwt';
 import { Customer, StatusEnum } from '@prisma/client';
 import { VerificationService } from 'src/verification/verification.service';
+import { SignUpInput } from 'src/authentication/dto/sign-up.input';
 
 @Injectable()
 export class CustomerService {
@@ -20,7 +20,7 @@ export class CustomerService {
     private verificationService: VerificationService,
   ) {}
 
-  async create(credentials: CreateCustomerInput): Promise<CustomerEntity> {
+  async create(credentials: SignUpInput): Promise<CustomerEntity> {
     const { email } = credentials;
     const hashedPassword = await hashString(credentials.password);
 
@@ -45,30 +45,39 @@ export class CustomerService {
 
   async findMany(params: FindManyCustomerInput) {
     const {
-      where: { identifier, ...where },
+      where: {
+        identifier,
+        updatedBefore,
+        updatedAfter,
+        createdBefore,
+        createdAfter,
+        ...where
+      },
       ...filter
     } = params;
-
+    console.log('createdBefore:', createdBefore);
     return this.prisma.customer.findMany({
       ...filter,
       where: {
         ...where,
         ...identifier,
+        createdAt: {
+          lt: createdBefore,
+          gt: createdAfter,
+        },
+        updatedAt: {
+          lt: updatedBefore,
+          gt: updatedAfter,
+        },
       },
     });
   }
 
   async update(params: UpdateOneCustomerInput): Promise<CustomerEntity> {
-    const {
-      customer,
-      where: { identifier, ...where },
-    } = params;
+    const { customer, where } = params;
 
     return this.prisma.customer.update({
-      where: {
-        ...where,
-        ...identifier,
-      },
+      where,
       data: customer,
     });
   }

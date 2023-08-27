@@ -1,5 +1,4 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
 
 @InputType()
 export class WhereUniqueCustomerInput {
@@ -12,23 +11,20 @@ export class WhereUniqueCustomerInput {
 
 @InputType()
 export class WhereCustomerInput {
-  @Field(() => WhereUniqueCustomerInput)
-  identifier: WhereUniqueCustomerInput;
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  identifier?: WhereUniqueCustomerInput;
 
   @Field(() => Date, { nullable: true })
-  createdAt?: Date;
+  createdBefore?: Date;
 
   @Field(() => Date, { nullable: true })
-  updatedAt?: Date;
-}
+  updatedBefore?: Date;
 
-@InputType()
-export class CreateCustomerInput {
-  @Field(() => String, {})
-  email: string;
+  @Field(() => Date, { nullable: true })
+  createdAfter?: Date;
 
-  @Field(() => String, {})
-  password: string;
+  @Field(() => Date, { nullable: true })
+  updatedAfter?: Date;
 }
 
 @InputType()
@@ -42,8 +38,8 @@ export class UpdateCustomerInput {
 
 @InputType()
 export class FindManyCustomerInput {
-  @Field(() => String, { nullable: true })
-  cursor?: Prisma.CustomerWhereUniqueInput;
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  cursor?: WhereUniqueCustomerInput;
 
   @Field(() => Int, { nullable: true })
   skip: number;
@@ -60,6 +56,6 @@ export class UpdateOneCustomerInput {
   @Field(() => UpdateCustomerInput)
   customer?: UpdateCustomerInput;
 
-  @Field(() => WhereCustomerInput, { nullable: true })
-  where: WhereCustomerInput;
+  @Field(() => WhereUniqueCustomerInput, { nullable: true })
+  where: WhereUniqueCustomerInput;
 }

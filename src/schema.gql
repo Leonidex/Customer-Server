@@ -55,21 +55,23 @@ type Query {
 }
 
 input FindManyCustomerInput {
-  cursor: String
+  cursor: WhereUniqueCustomerInput
   skip: Int
   take: Int
   where: WhereCustomerInput!
 }
 
-input WhereCustomerInput {
-  identifier: WhereUniqueCustomerInput!
-  createdAt: Timestamp
-  updatedAt: Timestamp
-}
-
 input WhereUniqueCustomerInput {
   id: String
   email: String
+}
+
+input WhereCustomerInput {
+  identifier: WhereUniqueCustomerInput
+  createdBefore: Timestamp
+  updatedBefore: Timestamp
+  createdAfter: Timestamp
+  updatedAfter: Timestamp
 }
 
 type Mutation {
@@ -84,7 +86,7 @@ type Mutation {
 
 input UpdateOneCustomerInput {
   customer: UpdateCustomerInput!
-  where: WhereCustomerInput
+  where: WhereUniqueCustomerInput
 }
 
 input UpdateCustomerInput {
