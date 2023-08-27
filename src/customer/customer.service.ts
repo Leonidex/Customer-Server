@@ -32,7 +32,7 @@ export class CustomerService {
       },
     });
 
-    await this.verificationService.createActivationCode(customer);
+    await this.verificationService.createActivationCodeAndSendEmail(customer);
 
     return customer;
   }

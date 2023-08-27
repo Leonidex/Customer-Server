@@ -5,6 +5,7 @@ import { AuthorizationGuard } from 'src/authorization/authorization.guard';
 import { CustomerService } from 'src/customer/customer.service';
 import { PrismaService } from 'src/prisma.service';
 import { VerificationService } from 'src/verification/verification.service';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Module({
   providers: [
@@ -17,6 +18,7 @@ import { VerificationService } from 'src/verification/verification.service';
     CustomerService,
     PrismaService,
     VerificationService,
+    MailerService,
   ],
 })
 export class AuthorizationModule {}
