@@ -11,6 +11,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { RefreshTokenModule } from './refresh-token/refresh-token.module';
 import { VerificationModule } from './verification/verification.module';
 import { AuthorizationModule } from './authorization/authorization.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthorizationModule } from './authorization/authorization.module';
     RefreshTokenModule,
     VerificationModule,
     AuthorizationModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, providePrismaClientExceptionFilter()],

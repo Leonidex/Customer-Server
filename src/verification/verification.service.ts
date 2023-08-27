@@ -11,13 +11,26 @@ import {
 } from 'lib/dto/request-status.output';
 import { ActivationCodeEntity } from 'lib/entities/activation-code.entity';
 import { parseDurationString } from 'lib/utilities';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class VerificationService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private mailerService: MailerService,
   ) {}
+
+  async createActivationCodeAndSendEmail(customer: Customer) {
+    const activationCode = await this.createActivationCode(customer);
+    await this.mailerService.sendEmail(
+      customer.email,
+      'Hello there',
+      `This is your activation code!\n${activationCode.code}`,
+    );
+
+    return activationCode;
+  }
 
   async createActivationCode(customer: Customer) {
     const code = await this.jwtService.signAsync({
@@ -57,7 +70,7 @@ export class VerificationService {
         },
       });
 
-      return await this.createActivationCode(customer);
+      return await this.createActivationCodeAndSendEmail(customer);
     } else {
       throw new BadRequestException('Customer already activated');
     }
