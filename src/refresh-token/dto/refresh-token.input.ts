@@ -6,6 +6,6 @@ export class RefreshTokenInput {
   @Field(() => String)
   token: string;
 
-  @Field(() => String)
+  @Field(() => WhereUniqueCustomerInput)
   identifier: WhereUniqueCustomerInput;
 }

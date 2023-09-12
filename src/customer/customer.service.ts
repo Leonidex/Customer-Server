@@ -74,11 +74,16 @@ export class CustomerService {
   }
 
   async update(params: UpdateOneCustomerInput): Promise<CustomerEntity> {
-    const { customer, where } = params;
+    const {
+      customer: { email, password },
+      where,
+    } = params;
+
+    const hashedPassword = await hashString(password);
 
     return this.prisma.customer.update({
       where,
-      data: customer,
+      data: { email: email, hashedPassword },
     });
   }
 

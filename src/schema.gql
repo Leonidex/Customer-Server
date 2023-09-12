@@ -111,5 +111,5 @@ input LoginInput {
 
 input RefreshTokenInput {
   token: String!
-  identifier: String!
+  identifier: WhereUniqueCustomerInput!
 }

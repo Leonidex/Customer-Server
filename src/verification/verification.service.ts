@@ -97,7 +97,7 @@ export class VerificationService {
       });
 
     if (
-      activationCode.code === data.activationCode &&
+      activationCode?.code === data.activationCode &&
       !moment(activationCode.expirationDate).isBefore(moment())
     ) {
       await this.prismaService.customer.update({
