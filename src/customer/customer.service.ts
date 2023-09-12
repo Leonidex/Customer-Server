@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import {
   FindManyCustomerInput,
@@ -88,6 +88,12 @@ export class CustomerService {
   }
 
   async remove(where: WhereUniqueCustomerInput): Promise<CustomerEntity> {
+    const { id, email } = where;
+
+    if (id && email) {
+      throw new BadRequestException('Provide either id or email, not both.');
+    }
+
     return this.prisma.customer.delete({
       where,
     });
