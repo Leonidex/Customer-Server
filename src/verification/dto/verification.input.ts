@@ -9,3 +9,9 @@ export class ActivateOneCustomerInput {
   @Field(() => String)
   activationCode: string;
 }
+
+@InputType()
+export class DeactivateOneCustomerInput {
+  @Field(() => WhereUniqueCustomerInput)
+  where: WhereUniqueCustomerInput;
+}

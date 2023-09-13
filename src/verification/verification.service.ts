@@ -1,7 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
-import { ActivateOneCustomerInput } from 'src/verification/dto/verification.input';
+import {
+  ActivateOneCustomerInput,
+  DeactivateOneCustomerInput,
+} from 'src/verification/dto/verification.input';
 import { PrismaService } from 'src/prisma.service';
 import { ActivationCode, Customer, StatusEnum } from '@prisma/client';
 import * as moment from 'moment/moment';
@@ -118,6 +125,27 @@ export class VerificationService {
       };
     } else {
       throw new BadRequestException('Invalid activation code');
+    }
+  }
+
+  async deactivateCustomer(data: DeactivateOneCustomerInput) {
+    const customer: Customer = await this.prismaService.customer.findUnique({
+      where: data.where,
+    });
+
+    if (customer) {
+      await this.prismaService.customer.update({
+        where: {
+          id: customer.id,
+        },
+        data: { ...customer, status: StatusEnum.DEACTIVATED },
+      });
+
+      return {
+        status: RequestStatusEnum.SUCCESS,
+      };
+    } else {
+      throw new NotFoundException('Customer not found');
     }
   }
 }

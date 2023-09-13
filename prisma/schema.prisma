@@ -46,6 +46,7 @@ model ActivationCode {
 enum StatusEnum {
   INITIAL
   VERIFIED
+  DEACTIVATED
 }
 
 enum RolesEnum {

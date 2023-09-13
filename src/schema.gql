@@ -78,6 +78,7 @@ type Mutation {
   updateOne(data: UpdateOneCustomerInput!): CustomerEntity!
   removeOne(where: WhereUniqueCustomerInput!): CustomerEntity!
   activateCustomer(data: ActivateOneCustomerInput!): RequestStatusOutput!
+  deactivateCustomer(data: DeactivateOneCustomerInput!): RequestStatusOutput!
   regenerateActivationCode: ActivationCodeEntity!
   signUp(credentials: SignUpInput!): SignUpOutput!
   login(credentials: LoginInput!): LoginOutput!
@@ -97,6 +98,10 @@ input UpdateCustomerInput {
 input ActivateOneCustomerInput {
   where: WhereUniqueCustomerInput!
   activationCode: String!
+}
+
+input DeactivateOneCustomerInput {
+  where: WhereUniqueCustomerInput!
 }
 
 input SignUpInput {
